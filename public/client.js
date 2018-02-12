@@ -33,7 +33,26 @@ function takePicture(){
 
 socket.on('newPicture', function(msg) {
   document.getElementById('pictureContainer').src=msg;
+
+  var image = document.getElementById('pictureContainer');
+  var pixelate = new Pixelate(image, {
+    amount: 0, // default: 0, pixelation percentage amount (range from 0 to 1) 
+  });
+  var slider = document.querySelector('.slider');
+  var output = document.getElementById('output');
+
+  slider.addEventListener('input', function(event) {
+    var amount = event.currentTarget.value;
+    update(amount);
+  });
+
+  function update(amount) {
+    output.textContent = Math.round(amount) + '%';
+    pixelate.setAmount(amount / 100).render();
+  }
+
 });
+
 // read the data from the message that the server sent and change the
 // background of the webpage based on the data in the message
 socket.on('server-msg', function(msg) {
@@ -42,7 +61,7 @@ socket.on('server-msg', function(msg) {
   switch (msg) {
     case "light":
       document.body.style.backgroundColor = "white";
-      console.log("white")
+      console.log("white");
       break;
     case "dark":
       document.body.style.backgroundColor = "black";
